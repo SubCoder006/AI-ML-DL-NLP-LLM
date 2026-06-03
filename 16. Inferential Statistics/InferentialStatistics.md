@@ -869,6 +869,30 @@ SSB = Σ nⱼ(x̄ⱼ − x̄)²           Between-group variation (group means v
 SSW = ΣΣ(xᵢⱼ − x̄ⱼ)²          Within-group variation (obs vs their group mean)
 ```
 
+### Total Sum of Squares (SST)
+
+$$
+SS_T = \sum x_{ij}^{2} - \frac{T^2}{N}
+$$
+
+### Between-Groups Sum of Squares (SSB)
+
+$$
+SS_B = \sum_{i=1}^{k}\frac{T_i^2}{n_j} - \frac{T^2}{N}
+$$
+
+### For equal-sized groups \(n_j = n\):
+
+$$
+SS_B = \frac{\sum T_i^2}{n} - \frac{T^2}{N}
+$$
+
+### Within-Groups Sum of Squares (SSW)
+
+$$
+SS_W = \sum x_{ij}^{2} - \sum_{i=1}^{k}\frac{T_i^2}{n_j}
+$$
+
 ---
 
 ## How One Score Decomposes
