@@ -89,6 +89,7 @@ $$\varepsilon_i = y_i - \hat{y}_i$$
 > The line is chosen to make the **sum of squared residuals** as small as possible — hence *least squares*.
 
 ### Geometric Intuition
+<img src="image.png" width="500">
 
 ```
   y
@@ -126,6 +127,8 @@ Positive and negative errors cancel each other out. Squaring ensures:
 | **Convex** (bowl-shaped) | Guarantees a single global minimum |
 
 ### Visualising the Cost Surface
+---
+<img src="image-1.png" width=500>
 
 ```
   J(β₀, β₁)
@@ -147,13 +150,16 @@ For simple linear regression, $J$ forms a perfect convex paraboloid in the $(\be
 
 ### Parameter Update Rule
 
-$$\beta_j \;\leftarrow\; \beta_j - \alpha \cdot \frac{\partial J}{\partial \beta_j} \qquad \text{(repeat until convergence)}$$
+$$\beta_j \;\rightarrow\; \beta_j - \alpha \cdot \frac{\partial J}{\partial \beta_j} \qquad \text{(repeat until convergence)}$$
 
 ### Gradients for Simple Linear Regression
 
 $$\frac{\partial J}{\partial \beta_0} = \frac{1}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)$$
 
 $$\frac{\partial J}{\partial \beta_1} = \frac{1}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)\cdot x_i$$
+
+---
+<img src="image-2.png" width=500>
 
 ### 🧠 Ball-Rolling Intuition
 
@@ -245,6 +251,9 @@ $$\mathbf{X} = \begin{bmatrix} 1 & x_1^{(1)} & x_2^{(1)} & \cdots & x_p^{(1)} \\
 
 > The leading column of 1s in $\mathbf{X}$ is the **bias trick** — it absorbs $\beta_0$ into the matrix product cleanly.
 
+---
+<img src="image-3.png" width=500>
+
 ### 📌 Example
 
 > Predicting **house price** using three features:
@@ -303,6 +312,35 @@ Where $n$ = samples and $p$ = number of features.
 
 > If adding a feature does **not** meaningfully improve fit, $\bar{R}^2$ will **decrease** — a clear signal that feature is junk.
 
+## R² vs Adjusted R² (when to use)
+
+### R² (Coefficient of Determination)
+- Use when:
+  - Comparing models with **same number of features**
+  - You want a quick measure of **variance explained**
+- Problem:
+  - Always **increases when you add features** (even useless ones)
+
+---
+
+### Adjusted R²
+- Use when:
+  - Comparing models with **different number of features**
+  - Doing **feature selection**
+- Advantage:
+  - Penalizes unnecessary features → **prevents overfitting illusion**
+
+---
+
+### When to use what
+- Same features → **R²**
+- Different features / feature selection → **Adjusted R²**
+
+---
+
+### Key Insight
+- **R² = goodness of fit**
+- **Adjusted R² = goodness of fit + penalty for complexity**
 ---
 
 ## 8. MSE, MAE, and RMSE
@@ -348,6 +386,61 @@ $$\text{MAE} = \frac{0.5 + 0 + 2}{3} = \mathbf{0.833}$$
 $$\text{MSE} = \frac{0.25 + 0 + 4}{3} = \mathbf{1.417}$$
 
 $$\text{RMSE} = \sqrt{1.417} \approx \mathbf{1.190}$$
+
+---
+## Why use MAE, MSE, RMSE
+
+### 1. MAE (Mean Absolute Error)
+- Use when:
+  - You want **simple, interpretable error**
+  - All errors should be treated **equally**
+- Key point: Linear penalty → **robust to outliers**
+
+---
+
+### 2. MSE (Mean Squared Error)
+- Use when:
+  - You want to **penalize large errors more**
+  - Useful for optimization (smooth, differentiable)
+- Key point: Squaring → **sensitive to outliers**
+
+---
+
+### 3. RMSE (Root Mean Squared Error)
+- Use when:
+  - You want error in **same unit as target**
+  - Still care more about large errors
+- Key point: Interpretable like MAE but **keeps MSE penalty behavior**
+
+---
+
+## When NOT to use MAE, MSE, RMSE
+
+### MAE — Avoid when:
+- You need **differentiability everywhere** (MAE has non-smooth gradient at 0)
+- You want to **penalize large errors more strongly**
+- Optimization needs to converge faster (MAE can be slower)
+
+---
+
+### MSE — Avoid when:
+- Dataset has **outliers** (gets dominated by large errors)
+- You want **robust performance** instead of extreme sensitivity
+- Error interpretability matters (unit becomes squared)
+
+---
+
+### RMSE — Avoid when:
+- Outliers exist (same issue as MSE)
+- You don’t want **over-penalization of large errors**
+- Simpler metric (like MAE) is sufficient
+
+---
+
+### Summary
+- **MAE** → equal penalty, robust  
+- **MSE** → heavy penalty on large errors  
+- **RMSE** → interpretable + penalizes large errors
 
 ---
 
@@ -424,7 +517,29 @@ $$J_{\text{lasso}}(\boldsymbol{\beta}) = \text{MSE} + \lambda \sum_{j=1}^{p} |\b
 ## 10. Linear Regression with OLS
 
 > **Definition:** Ordinary Least Squares (OLS) is a **closed-form analytical method** that finds the exact optimal $\boldsymbol{\beta}$ in a single computation — no iterative updates needed. It directly minimises $\sum \varepsilon_i^2$.
+---
+### Objective Function
 
+$$
+S(\beta_0, \beta_1) = \sum_{i=1}^{n} \left(y_i - (\beta_0 + \beta_1 x_i)\right)^2
+$$
+
+---
+
+### Closed-form Solutions
+
+$$
+\beta_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}
+$$
+
+$$
+\beta_1 = \frac{n\sum x_i y_i - \sum x_i \sum y_i}{n\sum x_i^2 - (\sum x_i)^2}
+$$
+
+$$
+\beta_0 = \bar{y} - \beta_1 \bar{x}
+$$
+---
 ### The Normal Equation
 
 $$\boxed{\hat{\boldsymbol{\beta}} = \left(\mathbf{X}^{\top}\mathbf{X}\right)^{-1}\mathbf{X}^{\top}\mathbf{y}}$$
